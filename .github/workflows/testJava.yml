@@ -1,14 +1,23 @@
-name: Java CI
-on: [push] # runs every time you push to GitHub
+name: Java CI with Maven
+on:
+push:
+branches:
+- main
+- Part2-SendMessages
+pull_request:
+branches:
+- main
 jobs:
 build:
 runs-on: ubuntu-latest
 steps:
-- uses: actions/checkout@v3
-- name: Set up JDK
+- name: Check out the code
+uses: actions/checkout@v3
+- name: Set up JDK 17
 uses: actions/setup-java@v3
 with:
 java-version: '17'
 distribution: 'temurin'
-- name: Build and run all tests with Maven
-run: mvn test # picks up LoginTest AND MessageTest automatically
+cache: maven
+- name: Build project and run all tests
+run: mvn test
