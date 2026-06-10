@@ -35,8 +35,8 @@ public class Message {
         this.messageID = generateMessageID();
         this.messageHash = createMessageHash();
     }
-
-    // Step 5.1: Generate 10-digit random ID
+        
+        // Generate 10-digit random ID
     private String generateMessageID() {
         Random rand = new Random();
         StringBuilder id = new StringBuilder();
@@ -50,7 +50,7 @@ public class Message {
         return messageID.length() == 10 && messageID.matches("\\d{10}");
     }
 
-    // Step 6.2: Check recipient format
+    //Check recipient format
     public String checkRecipientCell() {
         if (recipient.startsWith("+27") && recipient.length() <= 12) {
             return "Cell phone number successfully captured.";
@@ -59,7 +59,7 @@ public class Message {
         }
     }
 
-    // Step 7.1: Check message length and return correct string
+    //Check message length and return correct string
     public String checkMessageLength() {
         if (messageText.length() > 250) {
             int over = messageText.length() - 250;
@@ -69,7 +69,7 @@ public class Message {
         }
     }
 
-    // Step 8.2: Create hash - first 2 digits of ID : message number : first word : last word
+    // Create hash - first 2 digits of ID : message number : first word : last word
     public String createMessageHash() {
         String firstTwoDigits = messageID.substring(0, 2);
         String[] words = messageText.trim().split("\\s+");
@@ -78,24 +78,27 @@ public class Message {
         return firstTwoDigits + ":" + messageNumber + ":" + firstWord + lastWord;
     }
 
-    // Step 9.1: Sub-menu for Send, Disregard, Store
+    // Part 3: Updated - populate Lists based on choice
     public String sentMessage(int choice) {
         switch (choice) {
-            case 1:
-                storeMessage(); // call JSON method
-                return "Message successfully sent.";
-            case 2:
-                return "Press 0 to delete the message.";
-            case 3:
+            case 1: // Send
                 storeMessage();
+                sentMessages.add(this.messageText);
+                messageIDs.add(this.messageID);
+                messageHashes.add(this.recipient);
+                return "Message successfully sent.";
+            case 2: // Disregard
+                disregardedMessages.add(this.messageText);
+                return "Press 0 to delete the message.";
+            case 3: // Store
+                storeMessage();
+                storedMessages.add(this.messageText);
                 return "Message successfully stored.";
             default:
                 return "Invalid choice.";
         }
     }
 
-    // Step 10.2: Store message as JSON
-    // Attribution: org.json library - https://mvnrepository.com/artifact/org.json/json
     public void storeMessage() {
         JSONObject obj = new JSONObject();
         obj.put("messageID", this.messageID);
@@ -111,7 +114,7 @@ public class Message {
         }
     }
 
-    // Step 9.2: Display message details in exact order
+    // Display message details in exact order
     public String printMessages() {
         return "\nMessage ID: " + messageID +
                "\nMessage Hash: " + messageHash +
@@ -119,9 +122,24 @@ public class Message {
                "\nMessage: " + messageText;
     }
 
-    // Getters for testing
-    public String getMessageID() { return messageID; }
-    public String getMessageHash() { return messageHash; }
-    public int getMessageNumber() { return messageNumber; }
-    public String getMessageText() { return messageText; }
-}
+    // Part 3: b. Display longest message
+    public static String displayLongestMessage() {
+        if (sentMessages.isEmpty()) return "No messages sent yet";
+        String longest = sentMessages.get(0);
+        for (int i = 1; i < sentMessages.size(); i++) {
+            if (sentMessages.get(i)!= null && sentMessages.get(i).length() > longest.length()) {
+                longest = sentMessages.get(i);
+            }
+        }
+        return "Longest Message: " + longest + "\nLength: " + longest.length();
+    }
+
+    // Part 3: c. Search by messageID
+    public static String searchByMessageID(String id) {
+        for (int i = 0; i < messageIDs.size(); i++) {
+            if (messageIDs.get(i)!= null && messageIDs.get(i).equals(id)) {
+                return "Recipient: " + messageHashes.get(i) + "\nMessage: " + sentMessages.get(i);
+            }
+        }
+        return "Message ID not found";
+    }
