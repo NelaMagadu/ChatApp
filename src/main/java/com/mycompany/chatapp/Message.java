@@ -143,3 +143,28 @@ public class Message {
         }
         return "Message ID not found";
     }
+    
+// Part 3: d. Search by recipient
+    public static String searchByRecipient(String recipient) {
+        String result = "";
+        for (int i = 0; i < messageHashes.size(); i++) {
+            if (messageHashes.get(i)!= null && messageHashes.get(i).equals(recipient)) {
+                result += sentMessages.get(i) + "\n";
+            }
+        }
+        return result.isEmpty()? "No messages for this recipient" : result;
+    }
+
+    // Part 3: e. Delete by hash/recipient
+    public static String deleteByHash(String hash) {
+        for (int i = 0; i < messageHashes.size(); i++) {
+            if (messageHashes.get(i)!= null && messageHashes.get(i).equals(hash)) {
+                String msg = sentMessages.get(i);
+                sentMessages.remove(i);
+                messageHashes.remove(i);
+                messageIDs.remove(i);
+                return "Message: \"" + msg + "\" successfully deleted.";
+            }
+        }
+        return "Message hash not found";
+    }
