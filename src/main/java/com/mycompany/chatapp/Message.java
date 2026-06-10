@@ -20,6 +20,13 @@ public class Message {
     private String recipient;
     private String messageText;
     private String messageHash;
+    
+    // Part 3 arrays
+    private static List<String> sentMessages = new ArrayList<>();
+    private static List<String> disregardedMessages = new ArrayList<>();
+    private static List<String> storedMessages = new ArrayList<>();
+    private static List<String> messageHashes = new ArrayList<>();
+    private static List<String> messageIDs = new ArrayList<>();
 
     public Message(int messageNumber, String recipient, String messageText) {
         this.messageNumber = messageNumber;
