@@ -122,7 +122,7 @@ public class Message {
                "\nMessage: " + messageText;
     }
 
-    // Part 3: b. Display longest message
+    //  Display longest message
     public static String displayLongestMessage() {
         if (sentMessages.isEmpty()) return "No messages sent yet";
         String longest = sentMessages.get(0);
@@ -134,7 +134,7 @@ public class Message {
         return "Longest Message: " + longest + "\nLength: " + longest.length();
     }
 
-    // Part 3: c. Search by messageID
+    // Search by messageID
     public static String searchByMessageID(String id) {
         for (int i = 0; i < messageIDs.size(); i++) {
             if (messageIDs.get(i)!= null && messageIDs.get(i).equals(id)) {
@@ -144,7 +144,7 @@ public class Message {
         return "Message ID not found";
     }
     
-// Part 3: d. Search by recipient
+     //Search by recipient
     public static String searchByRecipient(String recipient) {
         String result = "";
         for (int i = 0; i < messageHashes.size(); i++) {
@@ -155,7 +155,7 @@ public class Message {
         return result.isEmpty()? "No messages for this recipient" : result;
     }
 
-    // Part 3: e. Delete by hash/recipient
+    //  Delete by hash/recipient
     public static String deleteByHash(String hash) {
         for (int i = 0; i < messageHashes.size(); i++) {
             if (messageHashes.get(i)!= null && messageHashes.get(i).equals(hash)) {
@@ -168,3 +168,46 @@ public class Message {
         }
         return "Message hash not found";
     }
+    
+      // Display report
+    public static String printReport() {
+        String report = "=== Sent Messages Report ===\n";
+        for (int i = 0; i < sentMessages.size(); i++) {
+            report += "Message Hash: " + messageHashes.get(i) +
+                      " | Recipient: " + messageHashes.get(i) +
+                      " | Message: " + sentMessages.get(i) + "\n";
+        }
+        return report.isEmpty()? "No messages to display" : report;
+        
+    }
+    
+   // Part 3 JSON loading using BufferedReader + FileReader
+    public static void loadStoredMessages() {
+        try (BufferedReader br = new BufferedReader(new FileReader("messages.json"))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine())!= null) {
+                sb.append(line);
+            }
+
+            JSONArray jsonArray = new JSONArray(sb.toString());
+            storedMessages.clear();
+            messageIDs.clear();
+            messageHashes.clear();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                storedMessages.add(obj.getString("messageText"));
+                messageIDs.add(obj.getString("messageID"));
+                messageHashes.add(obj.getString("recipient"));
+            }
+        } catch (IOException e) {
+            System.out.println("No previous messages found in JSON");
+        }
+    }
+
+    public String getMessageID() { return messageID; }
+    public String getMessageHash() { return messageHash; }
+    public int getMessageNumber() { return messageNumber; }
+    public String getMessageText() { return messageText; }
+}
